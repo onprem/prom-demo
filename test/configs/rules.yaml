@@ -1,0 +1,14 @@
+groups:
+- name: demo
+  rules:
+  - alert: BadLuck
+    expr: |
+      (
+        sum by (handler) (rate(demo_http_requests_total{handler="roulette",code="418"}[1m])) /
+        sum by (handler) (rate(demo_http_requests_total{handler="roulette"}[1m]))
+      ) * 100 > 5
+    for: 1m
+    labels:
+      severity: high
+    annotations:
+      summary: Bad luck in russian roulette

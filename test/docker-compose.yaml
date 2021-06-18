@@ -6,6 +6,7 @@ services:
     user: root
     volumes:
       - ./configs/prom.yaml:/etc/config/prom.yaml
+      - ./configs/rules.yaml:/etc/config/rules.yaml
       - ./data/prometheus:/data
     command:
       - "--config.file=/etc/config/prom.yaml"
@@ -20,3 +21,19 @@ services:
       - "9090:9090"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+
+  alertmanager:
+    image: prom/alertmanager:v0.22.2
+    container_name: alertmanager
+    user: root
+    volumes:
+      - ./configs/alertmanager.yaml:/etc/config/alertmanager.yaml
+      - ./data/alertmanager:/data
+    command:
+      - '--config.file=/etc/config/alertmanager.yaml'
+      - "--storage.path=/data"
+    restart: unless-stopped
+    expose:
+      - 9093
+    ports:
+      - "9093:9093"

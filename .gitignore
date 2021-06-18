@@ -1,3 +1,4 @@
 test/data/prometheus/*
+test/data/alertmanager/*
 
 !.keep

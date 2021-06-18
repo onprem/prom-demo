@@ -1,0 +1,10 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: "webhook"
+
+receivers:
+  - name: "webhook"
+    webhook_configs:
+      - url: "https://en1i24k4uhqdah.x.pipedream.net"
