@@ -23,12 +23,23 @@ var (
 		Namespace: name,
 		Help:      "Total number of incoming HTTP requests.",
 	}, []string{"handler", "code"})
+
+	pongDelayMilliseconds = promauto.NewHistogram(prometheus.HistogramOpts{
+		Name:      "pong_delay_milliseconds",
+		Namespace: name,
+		Help:      "Histogram of delay in saying pong.",
+		// Buckets to store pong delay: [500, 1000, 1500, 2000, ...., 5000].
+		Buckets: prometheus.LinearBuckets(500, 500, 10),
+	})
 )
 
 func sayPong(w http.ResponseWriter, r *http.Request) {
 	requestsTotal.WithLabelValues("ping", "200").Inc()
 
 	delay := rand.Float64() * 5 * 1000
+
+	pongDelayMilliseconds.Observe(delay)
+
 	time.Sleep(time.Millisecond * time.Duration(delay))
 	fmt.Fprintf(w, "pong after %ds!", int(delay/1000))
 }
