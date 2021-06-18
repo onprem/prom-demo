@@ -18,6 +18,17 @@ func sayPong(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "pong after %ds!", int(delay/1000))
 }
 
+func russianRoulette(w http.ResponseWriter, r *http.Request) {
+	chamber := rand.Intn(6)
+	if chamber == 0 {
+		w.WriteHeader(http.StatusTeapot)
+		w.Write([]byte("you die!"))
+		return
+	}
+
+	w.Write([]byte("you live!"))
+}
+
 func main() {
 	// Seeding to get different pseudo random results everytime.
 	rand.Seed(time.Now().Unix())
@@ -25,6 +36,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/ping", sayPong)
+	mux.HandleFunc("/roulette", russianRoulette)
 
 	log.Printf("starting web server on: %s\n", addr)
 
