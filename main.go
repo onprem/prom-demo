@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const (
@@ -37,6 +39,9 @@ func main() {
 
 	mux.HandleFunc("/ping", sayPong)
 	mux.HandleFunc("/roulette", russianRoulette)
+
+	// Expose Prometheus metrics.
+	mux.Handle("/metrics", promhttp.Handler())
 
 	log.Printf("starting web server on: %s\n", addr)
 
